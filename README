@@ -1,7 +1,6 @@
 # rings
 
 a colorful 'hello-world' for clj-processing. 
-click the screen to have a seizure.
 i didn't know when to use refs vs atoms vs agents at the time.
 
 
