@@ -1,0 +1,58 @@
+(import [processing.core PApplet])
+
+(def angle-seq (iterate #(+ (Math/toRadians 10) %) 0))
+
+(defn calculate-scale [angle] (* (Math/cos angle) 6))
+
+(def scale-seq (atom (map calculate-scale angle-seq)))
+
+(defn generate-scale []
+  (do
+    (swap! scale-seq rest) 
+    (first @scale-seq)))
+
+(defn generate-color [] (rand-int 255))
+
+(def petal-angles (map #(Math/toRadians %) (range 0 360 75)))
+
+(defn draw-translated-circle [applet color xoff yoff radius] 
+  (let [x (. applet mouseX)
+        y (. applet mouseY)]
+    (doto applet
+      (.fill color)
+      (.ellipse (+ x xoff) (+ y yoff) radius radius))))
+
+(defn draw-petals [applet]
+  (let [scale (generate-scale)]
+    (doall (for [angle petal-angles
+                 :let [xoff  (* (Math/cos angle) scale)
+                       yoff  (* (Math/sin angle) scale)]]
+             (draw-translated-circle applet (generate-color) xoff yoff scale)))))
+
+(defn draw-center [applet] (draw-translated-circle applet 255 0 0 2))
+
+(defn draw-flower-under-mouse [applet]
+  (doto applet
+    draw-petals
+    draw-center))
+
+(def papplet
+  (proxy [PApplet] []
+    (PApplet [] (println "in constructor"))
+    (setup []
+      (doto this
+        (.size 640 360)
+        (.background 102)
+        (.smooth)
+        (.noStroke)
+        (.fill 102)))
+    (draw [] (draw-flower-under-mouse this))))
+
+(.init papplet)
+
+(def frame (javax.swing.JFrame. "Test"))
+
+(doto frame
+  (-> (.getContentPane) (.add papplet))
+  (.pack)
+  (.setVisible true))
