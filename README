@@ -1,10 +1,18 @@
 # rings
 
-FIXME: write description
+a colorful 'hello-world' for clj-processing. 
+click the screen to have a seizure.
+i didn't know when to use refs vs atoms vs agents at the time.
+
 
 ## Usage
 
-FIXME: write
+lein swank
+M-x slime-connect
+open core.clj
+C-c C-k 
+click the screen
+enjoy your seizure
 
 ## Installation
 
